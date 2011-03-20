@@ -1,0 +1,13 @@
+name: WhereAmI
+main: richard.whereami.WhereAmI
+version: 0.1
+commands:
+  where:
+     description: Where everyone is on the server
+     usage: /where
+  mark:
+     description: mark a location 
+     usage: /mark bound location name
+  unmark:
+     description: remove location mark
+     usage: /unmark location name

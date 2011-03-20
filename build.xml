@@ -1,0 +1,76 @@
+<?xml version="1.0" ?>
+<project default="build">
+	<!-- build file bits from http://stackoverflow.com/questions/858766/generate-manifest-class-path-from-classpath-in-ant -->
+	<property name="build" location="${basedir}/build"/>
+	<property name="src" location="${basedir}/src"/>
+	<property name="release" location="${basedir}/release"/>
+	<property name="basedir" location="."/>
+	<property name="bukkit" location="${basedir}/../Bukkit/target"/>
+	
+	
+	<path id="lib.classpath">
+		  <fileset dir="${basedir}">
+		     <include name="libs/*.jar"/>
+		  </fileset>
+		</path>
+	<path id="bukkit.classpath">
+		<fileset dir="${bukkit}">
+			<include name="bukkit*.jar"/>
+		</fileset>
+	</path>
+	
+	<property name="lib_cp" value="${toString:lib.classpath}" />
+
+
+	<target name="manifestcp">
+	  <!--  <manifestclasspath property="manifest_cp" jarfile="WhereAmI.jar">
+	        <classpath refid="lib.classpath" />
+	    </manifestclasspath>-->
+		<pathconvert property="manifest_cp" pathsep=" ">
+		  <path refid="lib.classpath"/>
+		  <mapper>
+		    <chainedmapper>
+		       <flattenmapper/>
+		       <globmapper from="*.jar" to="WhereAmI/*.jar"/>
+		    </chainedmapper>
+		  </mapper>
+		</pathconvert>
+
+	    <echo message="Build Classpath: ${lib_cp}" />
+	    <echo message="Manifest Classpath: ${manifest_cp}" />
+	</target>
+
+	
+	
+
+		
+    <target name="build" depends="compile, jar" description="Main target">
+	
+    </target>
+  
+    <target name="compile" depends="manifestcp">
+    	<delete dir="${build}"/>
+    	<mkdir dir="${build}"/>
+    	<copy file="${src}/plugin.yml" todir="${build}"/>
+        <javac srcdir="${src}" destdir="${build}">
+        	<classpath refid="lib.classpath"/>
+        	<classpath refid="bukkit.classpath" />
+        	</javac>
+    </target>
+  
+  <target name="jar">
+  		<delete dir="${release}"/>
+  	    <mkdir dir="${release}"/>
+		<jar jarfile="${release}/WhereAmI.jar">
+		     <fileset dir="${build}" />
+		     <manifest>
+		       <attribute name="Class-Path" value="${manifest_cp}"/>
+		     </manifest>
+		 </jar>
+  </target>
+	
+
+
+
+
+</project>
