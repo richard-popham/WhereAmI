@@ -1,16 +1,17 @@
 <?xml version="1.0" ?>
 <project default="build">
 	<!-- build file bits from http://stackoverflow.com/questions/858766/generate-manifest-class-path-from-classpath-in-ant -->
+	<property name="basedir" location="."/>
 	<property name="build" location="${basedir}/build"/>
 	<property name="src" location="${basedir}/src"/>
 	<property name="release" location="${basedir}/release"/>
-	<property name="basedir" location="."/>
+	<property name="libs" location="${basedir}/libs"/>
 	<property name="bukkit" location="${basedir}/../Bukkit/target"/>
 	
 	
 	<path id="lib.classpath">
-		  <fileset dir="${basedir}">
-		     <include name="libs/*.jar"/>
+		  <fileset dir="${libs}">
+		     <include name="*.jar"/>
 		  </fileset>
 		</path>
 	<path id="bukkit.classpath">
@@ -67,6 +68,12 @@
 		       <attribute name="Class-Path" value="${manifest_cp}"/>
 		     </manifest>
 		 </jar>
+  	<mkdir dir="${release}/WhereAmI"/>
+  	<copy todir="${release}/WhereAmI">
+  		<fileset dir="${libs}">
+  				     <include name="*.jar"/>
+  		</fileset>
+  	</copy>
   </target>
 	
 
