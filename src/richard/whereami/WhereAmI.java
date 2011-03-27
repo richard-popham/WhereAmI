@@ -24,6 +24,7 @@ import org.bukkit.util.config.Configuration;
 
 import richard.whereami.commands.MarkUnMarkAreas;
 import richard.whereami.commands.Where;
+import richard.whereami.listener.WhereAmILocationSignListener;
 import richard.whereami.listener.WhereAmIPlayerMoveListener;
 import richard.whereami.listener.WhereAmIPlayerQuitListener;
 import richard.whereami.location.LocationIndex;
@@ -41,6 +42,7 @@ public class WhereAmI extends JavaPlugin {
 	public static final String UNMARK_COMMAND = "unmark";
 	private final WhereAmIPlayerMoveListener playerListener = new WhereAmIPlayerMoveListener(this);
     private final WhereAmIPlayerQuitListener playerQuitListener = new WhereAmIPlayerQuitListener(this);
+    private final WhereAmILocationSignListener locationSignListener = new WhereAmILocationSignListener(this);
     private final HashMap<Player, Boolean> debugees = new HashMap<Player, Boolean>();
     private final Locator locator = new Locator(this);
 
@@ -54,7 +56,7 @@ public class WhereAmI extends JavaPlugin {
         pm.registerEvent(Event.Type.PLAYER_TELEPORT, playerListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.PLAYER_RESPAWN, playerListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.PLAYER_QUIT, playerQuitListener, Priority.Normal, this);
-        
+        pm.registerEvent(Event.Type.BLOCK_RIGHTCLICKED, locationSignListener, Priority.Normal, this);
         
         this.getServer().getScheduler().scheduleAsyncRepeatingTask(this,locator,0,100);
         

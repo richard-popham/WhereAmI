@@ -1,10 +1,40 @@
 package richard.whereami.location;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import richard.whereami.location.MapArea.MapAreaDistanceToPoint;
 
 import com.infomatiq.jsi.Rectangle;
 
 public class MapArea {
+
+	
+	public static class MapAreaDistanceToPoint implements Comparable<MapAreaDistanceToPoint>
+	{
+		public MapArea mapArea;
+		public Double distance;
+
+		public MapAreaDistanceToPoint(double x, double y, double z, MapArea mapArea)
+		{
+			this.mapArea = mapArea;
+			this.distance = LocationUtil.distance(x, y, z, mapArea.x, mapArea.y, mapArea.z);
+		}
+
+		@Override
+        public int compareTo(MapAreaDistanceToPoint o) {
+	        // TODO Auto-generated method stub
+	        return this.distance.compareTo(o.distance);
+        }
+	}
+	
+	
+	@Override
+    public String toString() {
+	    // TODO Auto-generated method stub
+	    return name;
+    }
 
 	public double x;
 	public double y;
@@ -54,6 +84,15 @@ public class MapArea {
 			}
 		}
 		return closest;
+    }
+	public static List<MapAreaDistanceToPoint> sortedDistanceToPoint(List<MapArea> mapAreas, int blockX, int blockY, int blockZ) {
+		List<MapAreaDistanceToPoint> mapAreasDistanceToPoint = new ArrayList<MapArea.MapAreaDistanceToPoint>(mapAreas.size());
+	    for(MapArea mapArea : mapAreas)
+	    {
+	    	mapAreasDistanceToPoint.add(new MapAreaDistanceToPoint(blockX, blockY, blockZ, mapArea));
+	    }
+	    Collections.sort(mapAreasDistanceToPoint);
+		return mapAreasDistanceToPoint;
     }
 
 }

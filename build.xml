@@ -53,7 +53,7 @@
     	<delete dir="${build}"/>
     	<mkdir dir="${build}"/>
     	<copy file="${src}/plugin.yml" todir="${build}"/>
-        <javac srcdir="${src}" destdir="${build}">
+        <javac debug="on" srcdir="${src}" destdir="${build}">
         	<classpath refid="lib.classpath"/>
         	<classpath refid="bukkit.classpath" />
         	</javac>

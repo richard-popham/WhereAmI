@@ -60,7 +60,10 @@ public class Locator implements Runnable{
 					locationHistory = new PlayerLocationHistory();
 					playerLocationHistoryMap.put(playerLocationEntry.getKey(), locationHistory);
 					playerLocationHistoryMap.get(playerLocationEntry.getKey()).previousLocation = closest;
-					reportLocation(playerLocationEntry.getKey(),closest);
+					if (closest!=null)
+					{
+						reportLocation(playerLocationEntry.getKey(),closest);
+					}
 				}
 				playerLocationHistoryMap.get(playerLocationEntry.getKey()).previousLocationXYZ = currentLocationXYZ;
 			}

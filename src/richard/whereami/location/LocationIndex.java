@@ -79,6 +79,34 @@ public class LocationIndex {
 	  return false;	    
     }
 	
+	public List<MapArea> areaContains(Rectangle rectangle)
+	{
+		final List<MapArea> mapAreaList = new ArrayList<MapArea>();
+		rTree.contains(rectangle, new TIntProcedure() {
+			
+			@Override
+			public boolean execute(int index) {
+				mapAreaList.add(mapAreaHashMap.get(new Integer(index)));
+				return true;
+			}
+		});
+		return mapAreaList;
+	}
+	
+	public List<MapArea> areaIntersects(Rectangle rectangle)
+	{
+		final List<MapArea> mapAreaList = new ArrayList<MapArea>();
+		rTree.intersects(rectangle, new TIntProcedure() {
+			
+			@Override
+			public boolean execute(int index) {
+				mapAreaList.add(mapAreaHashMap.get(new Integer(index)));
+				return true;
+			}
+		});
+		return mapAreaList;
+	}
+	
 	public String removeLocationNearest(double x,double y, double z) {
 		MapArea mapArea = MapArea.nearestToPoint(x,y,z,getNearest(x, y, z, 10, 1000));
 		if (mapArea!=null)
