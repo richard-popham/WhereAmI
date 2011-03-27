@@ -1,6 +1,7 @@
 package richard.whereami.location;
 
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -10,19 +11,28 @@ import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.util.config.Configuration;
 
+import com.google.gson.Gson;
+
 import richard.whereami.WhereAmI;
 
 public class Locator implements Runnable{
 
-	public LocationIndex getLocationIndex() {
-    	return locationIndex;
+	private static final String CONFIG_LOCATION_INDEX_DATA = "locationIndex.data";
+	public LocationIndex getLocationIndex(String world) {
+    	LocationIndex index = locationIndexMap.get(world);
+    	if (index==null)
+    	{
+    		index = new LocationIndex(world);
+    		locationIndexMap.put(world, index);
+    	}
+    	return index;
     }
 
 	private WhereAmI whereAmI;
-    private LocationIndex locationIndex = new LocationIndex();
+    private ConcurrentHashMap<String, LocationIndex> locationIndexMap = new ConcurrentHashMap<String, LocationIndex>();
     private ConcurrentHashMap<String, double[]> playerLocationMap = new ConcurrentHashMap<String, double[]>();
 	private ConcurrentHashMap<String, PlayerLocationHistory> playerLocationHistoryMap = new ConcurrentHashMap<String, PlayerLocationHistory>();
-	
+	private ConcurrentHashMap<String, String> playerWorldMap = new ConcurrentHashMap<String, String>();
 	public ConcurrentHashMap<String, PlayerLocationHistory> getPlayerLocationHistoryMap() {
 		return playerLocationHistoryMap;
 	}
@@ -43,7 +53,7 @@ public class Locator implements Runnable{
 			{
 				double[] currentLocationXYZ = playerLocationEntry.getValue();
 				//get everything the location is within (distance = 0 to the area)
-				List<MapArea> insideOf = locationIndex.getNearest(currentLocationXYZ[0], currentLocationXYZ[1], currentLocationXYZ[2],10,0);
+				List<MapArea> insideOf = getLocationIndex((playerWorldMap.get(playerLocationEntry.getKey()))).getNearest(currentLocationXYZ[0], currentLocationXYZ[1], currentLocationXYZ[2],10,0);
 				MapArea closest = MapArea.nearestToPoint(currentLocationXYZ[0], currentLocationXYZ[1], currentLocationXYZ[2],insideOf);
 				PlayerLocationHistory locationHistory = playerLocationHistoryMap.get(playerLocationEntry.getKey());
 				if (locationHistory!=null)
@@ -95,15 +105,46 @@ public class Locator implements Runnable{
 	}
 
 
-	public void load(Configuration configuration) {
-	    this.getLocationIndex().load(configuration);
-	    
-    }
+	public void save(Configuration configuration)
+	{
+		List<MapArea> mapAreaFromAllWorlds = new ArrayList<MapArea>();
+		for(LocationIndex locationIndex : locationIndexMap.values())
+		{
+			mapAreaFromAllWorlds.addAll(locationIndex.mapAreaHashMap.values());
+		}
+		configuration.setProperty(CONFIG_LOCATION_INDEX_DATA, new Gson().toJson(mapAreaFromAllWorlds.toArray(new MapArea[]{})));
+		
+	}
+	
+	public void load(Configuration configuration)
+	{
+		for(LocationIndex locationIndex : locationIndexMap.values())
+		{
+			locationIndex.clear();
+		}
+		String dataToLoad = configuration.getString(CONFIG_LOCATION_INDEX_DATA);
+		if (dataToLoad!=null&&dataToLoad.length()>0)
+		{
+			MapArea[] mapAreaData =  new Gson().fromJson(dataToLoad, MapArea[].class);
+			for (MapArea mapArea : mapAreaData)
+			{
+				if (mapArea.getWorld()!=null)
+				{
+					getLocationIndex(mapArea.getWorld()).addLocation(mapArea);
+				}
+				else
+				{
+					mapArea.setWorld(whereAmI.getServer().getWorlds().get(0).getName());
+					getLocationIndex(whereAmI.getServer().getWorlds().get(0).getName()).addLocation(mapArea);
+				}
+			}
+		}
+	}
 
 
-	public void save(Configuration configuration) {
-		this.getLocationIndex().save(configuration);
-	    
+	public ConcurrentHashMap<String, String> getPlayerWorldMap() {
+	    // TODO Auto-generated method stub
+	    return playerWorldMap;
     }
 
 	

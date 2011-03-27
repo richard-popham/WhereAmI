@@ -104,7 +104,7 @@ public class WhereAmI extends JavaPlugin {
     }
     private void save() {
 	    this.getLocator().save(this.getConfiguration());
-	    
+	    this.getConfiguration().save();
     }
 
 

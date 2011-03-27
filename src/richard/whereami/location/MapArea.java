@@ -11,6 +11,9 @@ import com.infomatiq.jsi.Rectangle;
 public class MapArea {
 
 	
+	public void setWorld(String world) {
+    	this.world = world;
+    }
 	public static class MapAreaDistanceToPoint implements Comparable<MapAreaDistanceToPoint>
 	{
 		public MapArea mapArea;
@@ -45,11 +48,15 @@ public class MapArea {
 	private int pz; //west
 	private String name;
 	private Rectangle locationArea;
+	private String world;
 	
+	public String getWorld() {
+    	return world;
+    }
 	//in minecraft x runs south+/north- z runs  west+/east- and y up down
 	private MapArea(){}
 	public MapArea(Rectangle locationArea, double x, double y, double z, int px, int mx, int pz, int mz,
-			String name) {
+			String name, String world) {
 		this.x = x;
 		this.y=y;
 		this.z=z;
@@ -59,6 +66,7 @@ public class MapArea {
 		this.mz=mz;
 		this.name=name;
 		this.locationArea=locationArea;
+		this.world = world;
 	}
 
 	public Rectangle getLocationArea() {

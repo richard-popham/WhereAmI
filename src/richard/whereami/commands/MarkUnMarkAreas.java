@@ -29,12 +29,12 @@ public class MarkUnMarkAreas implements CommandExecutor {
 					final double x = location.getX();
 					final double y = location.getY();
 					final double z = location.getZ();
-
+					final String world = player.getWorld().getName();
 					sender.getServer().getScheduler().scheduleAsyncDelayedTask(whereAmI, new Runnable() {
 
 						@Override
 						public void run() {
-							whereAmI.getLocator().getLocationIndex().addLocation(x, y, z, boundSize, name);
+							whereAmI.getLocator().getLocationIndex(world).addLocation(x, y, z, boundSize, name);
 							whereAmI.sendMessage(player, "Added " + name, false);
 						}
 					});
@@ -54,12 +54,13 @@ public class MarkUnMarkAreas implements CommandExecutor {
 				final double x = location.getX();
 				final double y = location.getY();
 				final double z = location.getZ();
+				final String world = player.getWorld().getName();
 				sender.getServer().getScheduler().scheduleAsyncDelayedTask(whereAmI, new Runnable() {
 
 					@Override
 					public void run() {
 						if (name != null) {
-							if (whereAmI.getLocator().getLocationIndex().removeLocation(name))
+							if (whereAmI.getLocator().getLocationIndex(world).removeLocation(name))
 							{
 								whereAmI.sendMessage(player, "Removed " + name, false);
 							}
@@ -69,7 +70,7 @@ public class MarkUnMarkAreas implements CommandExecutor {
 							}
 							
 						} else {
-							String areaNameRemoved = whereAmI.getLocator().getLocationIndex().removeLocationNearest(x,y,z);
+							String areaNameRemoved = whereAmI.getLocator().getLocationIndex(world).removeLocationNearest(x,y,z);
 							if (areaNameRemoved!=null)
 							{
 								whereAmI.sendMessage(player, "Removed " + areaNameRemoved, false);

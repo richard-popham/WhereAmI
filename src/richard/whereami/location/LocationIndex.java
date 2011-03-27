@@ -17,15 +17,21 @@ import com.infomatiq.jsi.rtree.RTree;
 
 public class LocationIndex {
 
-	private static final String CONFIG_LOCATION_INDEX_DATA = "locationIndex.data";
+
 	RTree rTree;
 	int indexInt = 0;
 	public HashMap<Integer, MapArea> mapAreaHashMap = new HashMap<Integer, MapArea>();
 	public HashMap<String, Integer> nameToIndexMap = new HashMap<String, Integer>();
+	private String world;
 	
-	public LocationIndex()
+	public String getWorld() {
+    	return world;
+    }
+
+	public LocationIndex(String world)
 	{
 		clear();
+		this.world = world;
 	}
 	
 	public synchronized int getSize()
@@ -33,7 +39,7 @@ public class LocationIndex {
 		return mapAreaHashMap.size();
 	}
 	
-	private void clear() {
+	public void clear() {
 		rTree = new RTree();
 		rTree.init(null);
 		mapAreaHashMap.clear();
@@ -54,7 +60,7 @@ public class LocationIndex {
 	{
 		//rectangle is ((x+px),(y+py) top right and then bottom left (y-my,x-mx)
 		Rectangle rectangle = new Rectangle((float)x+px, (float)z+pz, (float)x-mx, (float)z-mz);
-		MapArea mapArea = new MapArea(rectangle,x,y,z,px,mx,pz,mz,name);
+		MapArea mapArea = new MapArea(rectangle,x,y,z,px,mx,pz,mz,name, world);
 		addLocation(mapArea);
 	}
 	public synchronized void addLocation(MapArea mapArea)
@@ -135,25 +141,7 @@ public class LocationIndex {
 		return mapAreaList;
 	}
 	
-	public void save(Configuration configuration)
-	{
-		configuration.setProperty(CONFIG_LOCATION_INDEX_DATA, new Gson().toJson(mapAreaHashMap.values().toArray(new MapArea[]{})));
 	
-	}
-	
-	public void load(Configuration configuration)
-	{
-		clear();
-		String dataToLoad = configuration.getString(CONFIG_LOCATION_INDEX_DATA);
-		if (dataToLoad!=null&&dataToLoad.length()>0)
-		{
-			MapArea[] mapAreaData =  new Gson().fromJson(dataToLoad, MapArea[].class);
-			for (MapArea mapArea : mapAreaData)
-			{
-				addLocation(mapArea);
-			}
-		}
-	}
 
 	
 

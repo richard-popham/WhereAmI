@@ -76,7 +76,7 @@ public class WhereAmILocationSignListener extends BlockListener {
 	  					Location signLocation = event.getBlock().getLocation();
 	  					BlockFace blockFacing = getFacing(sign);
 	  					Rectangle signAreaRec = calculateRectangle(signLocation,blockFacing,recWidth,recLength);
-	  					this.whereAmI.getServer().getScheduler().scheduleAsyncDelayedTask(whereAmI,new LocationSignAsyncTextProcessor(whereAmI,new LocationSign(signLocation.getBlockX(), signLocation.getBlockY(), signLocation.getBlockZ(), firstLine, signAreaRec, blockFacing, minRange,maxRange)));
+	  					this.whereAmI.getServer().getScheduler().scheduleAsyncDelayedTask(whereAmI,new LocationSignAsyncTextProcessor(whereAmI,new LocationSign(signLocation.getBlockX(), signLocation.getBlockY(), signLocation.getBlockZ(), firstLine, signAreaRec, blockFacing, minRange,maxRange, event.getBlock().getWorld().getName())));
 	  					
 	  				}
 	  				catch(Exception e){}

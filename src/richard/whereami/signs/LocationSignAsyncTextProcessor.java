@@ -28,8 +28,8 @@ public class LocationSignAsyncTextProcessor implements Runnable{
 		
 		@Override
 		public void run() {
-			List<MapArea> mapAreas = whereAmI.getLocator().getLocationIndex().areaIntersects(locationSign.signArea);
-			mapAreas.removeAll(whereAmI.getLocator().getLocationIndex().getNearest(locationSign.blockX,locationSign.blockY,locationSign.blockZ, 10, 0));
+			List<MapArea> mapAreas = whereAmI.getLocator().getLocationIndex(locationSign.world).areaIntersects(locationSign.signArea);
+			mapAreas.removeAll(whereAmI.getLocator().getLocationIndex(locationSign.world).getNearest(locationSign.blockX,locationSign.blockY,locationSign.blockZ, 10, 0));
 
 			List<MapAreaDistanceToPoint> sortedDistanceMapAreas = MapArea.sortedDistanceToPoint(mapAreas, locationSign.blockX,locationSign.blockY,locationSign.blockZ);
 			List<String> newSignStrings = new ArrayList<String>();
@@ -49,7 +49,7 @@ public class LocationSignAsyncTextProcessor implements Runnable{
 			@Override
 			public void run() {
 				//look for signs around this block
-				List<Sign> signs = getSignsAround(locationSign,whereAmI.getServer().getWorlds().get(0));
+				List<Sign> signs = getSignsAround(locationSign,whereAmI.getServer().getWorld(locationSign.world));
 				
 				
 				for (int i=0;i<signs.size();i++)

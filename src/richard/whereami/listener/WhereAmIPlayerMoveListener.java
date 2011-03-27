@@ -35,7 +35,7 @@ public class WhereAmIPlayerMoveListener extends PlayerListener {
 		Location location = event.getPlayer().getLocation();
     	double[] locationArray = {location.getX(),location.getY(),location.getZ()};
     	plugin.getLocator().getPlayerLocationMap().put(event.getPlayer().getName(), locationArray);
-		 
+    	plugin.getLocator().getPlayerWorldMap().put(event.getPlayer().getName(), event.getPlayer().getWorld().getName());
 	}
 
 	@Override

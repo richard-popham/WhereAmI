@@ -15,7 +15,8 @@ public class LocationSign
 	public BlockFace blockFace;
 	public int maxRange;
 	public int minRange;
-	public LocationSign(int blockX, int blockY, int blockZ, String originalText, Rectangle signArea, BlockFace blockFace, int minRange, int maxRange) {
+	public String world;
+	public LocationSign(int blockX, int blockY, int blockZ, String originalText, Rectangle signArea, BlockFace blockFace, int minRange, int maxRange, String world) {
         this.blockX = blockX;
         this.blockY = blockY;
         this.blockZ = blockZ;
@@ -24,6 +25,7 @@ public class LocationSign
         this.blockFace = blockFace;
         this.minRange = minRange;
         this.maxRange = maxRange;
+        this.world = world;
     }
 	
 	
