@@ -137,7 +137,6 @@ public class LocationSignAsyncTextProcessor implements Runnable{
         }
 
 		private String signText(MapAreaDistanceToPoint mapAreaDistanceToPoint) {
-            // TODO Auto-generated method stub
             return areaText(mapAreaDistanceToPoint.mapArea)+" "+distanceText(mapAreaDistanceToPoint.distance);
         }
 
