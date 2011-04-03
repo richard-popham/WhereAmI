@@ -10,8 +10,10 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockListener;
-import org.bukkit.event.block.BlockRightClickEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerListener;
 import org.bukkit.material.MaterialData;
 
 import com.infomatiq.jsi.Rectangle;
@@ -23,7 +25,7 @@ import richard.whereami.location.MapArea.MapAreaDistanceToPoint;
 import richard.whereami.signs.LocationSign;
 import richard.whereami.signs.LocationSignAsyncTextProcessor;
 
-public class WhereAmILocationSignListener extends BlockListener {
+public class WhereAmILocationSignListener extends PlayerListener {
 
 	private WhereAmI whereAmI;
 
@@ -32,57 +34,64 @@ public class WhereAmILocationSignListener extends BlockListener {
 
     }
 	
+	
+	
 	@Override
-    public void onBlockRightClick(BlockRightClickEvent event) {
-		Block blockClicked = event.getBlock();
-		//click on a sign
-	  	if (blockClicked.getState() instanceof Sign)
-	  	{
-	  		Sign sign = (Sign) blockClicked.getState();
-	  		String firstLine = sign.getLine(0);
-	  		String secondLine = sign.getLine(1);
-	  		//click on a sign with ls: on it;
-	  		if (firstLine.contains("ls:"))
-	  		{
-	  			//extract args from the ls on the sign
-	  			String[] lineSplit = firstLine.split(":");
-	  			if (lineSplit.length>=2)
-	  			{
-	  				try
-	  				{
-	  					int recLength = Integer.parseInt(lineSplit[1]);
-	  					int recWidth = 300;
-	  					if(lineSplit.length>=3)
-	  					{
-	  						recWidth = Integer.parseInt(lineSplit[2]);
-	  					}
-	  					
-	  					int minRange =0;
-	  					int maxRange = Integer.MAX_VALUE;
-	  					
-	  					if (secondLine.length()>0)
-	  					{
-	  						String[] secondLineSplit = secondLine.split(":");
-	  						try{
-	  							minRange = Integer.parseInt(secondLineSplit[0]);
-	  						}
-	  						catch(Exception e){}
-	  						try{
-	  							maxRange = Integer.parseInt(secondLineSplit[1]);
-	  						}
-	  						catch(Exception e){}
-	  					}
-	  					
-	  					Location signLocation = event.getBlock().getLocation();
-	  					BlockFace blockFacing = getFacing(sign);
-	  					Rectangle signAreaRec = calculateRectangle(signLocation,blockFacing,recWidth,recLength);
-	  					this.whereAmI.getServer().getScheduler().scheduleAsyncDelayedTask(whereAmI,new LocationSignAsyncTextProcessor(whereAmI,new LocationSign(signLocation.getBlockX(), signLocation.getBlockY(), signLocation.getBlockZ(), firstLine, signAreaRec, blockFacing, minRange,maxRange, event.getBlock().getWorld().getName())));
-	  					
-	  				}
-	  				catch(Exception e){}
-	  			}
-	  		}
-	  	}
+    public void onPlayerInteract(PlayerInteractEvent event) {
+	   if (event.getAction() == Action.RIGHT_CLICK_BLOCK)
+	   {
+		   Block blockClicked = event.getClickedBlock();
+		   if (blockClicked!=null)
+		   {
+				if (event.getClickedBlock().getState() instanceof Sign)
+			  	{
+			  		Sign sign = (Sign) blockClicked.getState();
+			  		String firstLine = sign.getLine(0);
+			  		String secondLine = sign.getLine(1);
+			  		//click on a sign with ls: on it;
+			  		if (firstLine.contains("ls:"))
+			  		{
+			  			//extract args from the ls on the sign
+			  			String[] lineSplit = firstLine.split(":");
+			  			if (lineSplit.length>=2)
+			  			{
+			  				try
+			  				{
+			  					int recLength = Integer.parseInt(lineSplit[1]);
+			  					int recWidth = 300;
+			  					if(lineSplit.length>=3)
+			  					{
+			  						recWidth = Integer.parseInt(lineSplit[2]);
+			  					}
+			  					
+			  					int minRange =0;
+			  					int maxRange = Integer.MAX_VALUE;
+			  					
+			  					if (secondLine.length()>0)
+			  					{
+			  						String[] secondLineSplit = secondLine.split(":");
+			  						try{
+			  							minRange = Integer.parseInt(secondLineSplit[0]);
+			  						}
+			  						catch(Exception e){}
+			  						try{
+			  							maxRange = Integer.parseInt(secondLineSplit[1]);
+			  						}
+			  						catch(Exception e){}
+			  					}
+			  					
+			  					Location signLocation = blockClicked.getLocation();
+			  					BlockFace blockFacing = getFacing(sign);
+			  					Rectangle signAreaRec = calculateRectangle(signLocation,blockFacing,recWidth,recLength);
+			  					this.whereAmI.getServer().getScheduler().scheduleAsyncDelayedTask(whereAmI,new LocationSignAsyncTextProcessor(whereAmI,new LocationSign(signLocation.getBlockX(), signLocation.getBlockY(), signLocation.getBlockZ(), firstLine, signAreaRec, blockFacing, minRange,maxRange, blockClicked.getWorld().getName())));
+			  					
+			  				}
+			  				catch(Exception e){}
+			  			}
+			  		}
+			  	} 
+		   }
+	   }
     }
 	
 	/**

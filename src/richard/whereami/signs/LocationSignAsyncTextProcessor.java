@@ -96,7 +96,6 @@ public class LocationSignAsyncTextProcessor implements Runnable{
 					{
 						
 						Block currentBlock = world.getBlockAt(blockX+=xzRoatation[0], blockY, blockZ+=xzRoatation[1]);
-						System.out.println(blockX+" "+blockY+" "+blockZ);
 						if (currentBlock!=null && currentBlock.getState() instanceof Sign)
 						{
 							lastBlockSign = true;
@@ -211,9 +210,7 @@ public class LocationSignAsyncTextProcessor implements Runnable{
         }
 
 		private String reduceChars(String name, int by, int lengthAim) {
-			System.out.println(name+" "+by+" "+lengthAim);
            String[] nameSplit = name.split(" |-");
-           System.out.println(nameSplit.length);
            if (nameSplit.length>1)
            {
         	   String reducedString = null;
@@ -239,7 +236,6 @@ public class LocationSignAsyncTextProcessor implements Runnable{
         }
 
 		private void reduceStrings(String[] nameSplit, int by) {
-			System.out.println(nameSplit.length);
 		   if (by<=0)
 		   {
 			   return;

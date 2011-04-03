@@ -56,7 +56,7 @@ public class WhereAmI extends JavaPlugin {
         pm.registerEvent(Event.Type.PLAYER_TELEPORT, playerListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.PLAYER_RESPAWN, playerListener, Priority.Normal, this);
         pm.registerEvent(Event.Type.PLAYER_QUIT, playerQuitListener, Priority.Normal, this);
-        pm.registerEvent(Event.Type.BLOCK_RIGHTCLICKED, locationSignListener, Priority.Normal, this);
+        pm.registerEvent(Event.Type.PLAYER_INTERACT, locationSignListener, Priority.Normal, this);
         
         this.getServer().getScheduler().scheduleAsyncRepeatingTask(this,locator,0,100);
         
